@@ -2,7 +2,7 @@ import { PATH_COMPONENT, respondWith } from "./utils.ts";
 import { Octokit } from "octokit";
 import { parse, parseRange, satisfies, Range } from "@std/semver";
 
-export const REGEX = new RegExp("^" + PATH_COMPONENT.repeat(2) + "\\/([^\\/]+)$");
+export const REGEX = new RegExp(`^${PATH_COMPONENT.repeat(2)}\\/([^\\/]+)$`);
 const api = new Octokit();
 
 function tarballUrl(owner: string, repo: string, rev: string): string {
@@ -13,7 +13,9 @@ function tarballUrl(owner: string, repo: string, rev: string): string {
 
 export async function getVersions(path: string): Promise<Response> {
   const match = REGEX.exec(path);
-  if (!match) return Response.json({ error: "regex_match_fail" }, { status: 400 });
+  if (!match) {
+    return Response.json({ error: "regex_match_fail" }, { status: 400 });
+  }
 
   const owner = match[1];
   const repo = match[2];

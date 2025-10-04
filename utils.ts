@@ -6,6 +6,7 @@ export function respondWith(tarballUrl: string): Response {
     headers: {
       "Location": tarballUrl,
       "Link": `<${tarballUrl}>; rel="immutable"`,
+      "Cache-Control": "max-age=300",
     },
   });
 }
