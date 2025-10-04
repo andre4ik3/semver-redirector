@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
   } else if (url.hostname.startsWith("nixpkgs.")) {
   response = await nixpkgs.getVersions(path);
   } else {
-    return Response.json({ error: "no_handler_found" }, { status: 404 });
+    return Response.redirect("https://github.com/andre4ik3/semver-redirector");
   }
 
   if (response.ok) {

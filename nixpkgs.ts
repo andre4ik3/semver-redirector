@@ -65,8 +65,6 @@ export async function getVersions(path: string): Promise<Response> {
     ch.metric.current === "1"
   );
 
-  console.log(channel);
-
   if (!channel) {
     return Response.json({ error: "not_found" }, { status: 404 });
   }
