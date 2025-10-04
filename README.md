@@ -1,5 +1,7 @@
 # Flake SemVer Redirector
 
+[![Deploy on Deno](https://deno.com/button)][Deploy]
+
 Parses semantic version ranges in URLs and redirects them to matched tags in a
 GitHub/Gitea/Forgejo repository.
 
@@ -10,7 +12,7 @@ returned in the error.
 The full semantic version syntax is supported, including complex specifiers,
 such as `1.2.7 || >=1.2.9 <2.0.0`. However not all syntax is supported directly
 in URLs: some special characters must be URL-encoded. See the [`semver` library
-documentation][1] for a more detailed description of the supported syntax.
+documentation][Semver] for a more detailed description of the supported syntax.
 
 The special case `latest` causes all semantic version parsing to be skipped and
 just returns the latest tag, making it possible to get the latest tag of flakes
@@ -60,7 +62,7 @@ Using the public instance located at <https://flake.andre4ik3.dev>:
 
 ## Running
 
-The project is a simple script made with [Deno][2]. You can run it like this:
+The project is a simple script made with [Deno]. You can run it like this:
 
 ```
 deno run --allow-net main.ts
@@ -72,8 +74,7 @@ subdomains that start with `github.` for GitHub and `gitea.` for Gitea/Forgejo.
 (Or you could change the script to determine the handler differently. It's
 pretty simple after all.)
 
-For local experimentation you can use [Caddy][3] with a configuration like
-this:
+For local experimentation you can use [Caddy] with a configuration like this:
 
 ```
 https://*.flake.localhost {
@@ -88,6 +89,7 @@ be able to run commands like this with no problem:
 nix flake show "https://github.flake.localhost/NixOS/nix/2"
 ```
 
-[1]: https://jsr.io/@std/semver
-[2]: https://deno.land
-[3]: https://caddyserver.com
+[Semver]: https://jsr.io/@std/semver
+[Deno]: https://deno.land
+[Caddy]: https://caddyserver.com
+[Deploy]: https://console.deno.com/new?clone=https%3A%2F%2Fgithub.com%2Fandre4ik3%2Fsemver-redirector
