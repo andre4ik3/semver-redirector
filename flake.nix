@@ -1,19 +1,18 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "https://nixpkgs.flake.andre4ik3.dev";
     systems.url = "github:nix-systems/default";
-
-    utils = {
-      url = "github:numtide/flake-utils";
-      inputs.systems.follows = "systems";
-    };
   };
 
-  outputs = inputs: inputs.utils.lib.eachDefaultSystem (system: let
-    pkgs = inputs.nixpkgs.legacyPackages.${system};
+  outputs = { nixpkgs, ... }@inputs: (let
+    inherit (nixpkgs) lib;
+    systems = import inputs.systems;
+    eachSystem = f: lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
   in {
-    devShells.default = pkgs.mkShellNoCC {
-      packages = [ pkgs.deno ];
-    };
+    devShells = eachSystem (pkgs: {
+      default = pkgs.mkShellNoCC {
+        packages = [ pkgs.deno ];
+      };
+    });
   });
 }

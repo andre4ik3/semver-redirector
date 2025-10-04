@@ -36,17 +36,30 @@ export async function getVersions(path: string): Promise<Response> {
     return Response.json({ error: "regex_match_fail" }, { status: 400 });
   }
 
-  const status = match.at(1) || STATUSES[0];
-  const variant = match.at(2) || VARIANTS[0];
+  let status: Status;
+  let variant: Variant;
 
-  if (!STATUSES.includes(status as Status)) {
-    return Response.json({ error: "invalid_status", status }, { status: 400 });
+  const firstParameter = match.at(1);
+  const secondParameter = match.at(2);
+
+  if (STATUSES.includes(firstParameter as Status)) {
+    status = firstParameter as Status;
+  } else if (STATUSES.includes(secondParameter as Status)) {
+    status = secondParameter as Status;
+  } else if (!firstParameter || !secondParameter) {
+    status = STATUSES[0];
+  } else {
+    return Response.json({ error: "invalid_parameters" }, { status: 400 });
   }
 
-  if (!VARIANTS.includes(variant as Variant)) {
-    return Response.json({ error: "invalid_variant", variant }, {
-      status: 400,
-    });
+  if (VARIANTS.includes(firstParameter as Variant)) {
+    variant = firstParameter as Variant;
+  } else if (VARIANTS.includes(secondParameter as Variant)) {
+    variant = secondParameter as Variant;
+  } else if (!firstParameter || !secondParameter) {
+    variant = VARIANTS[0];
+  } else {
+    return Response.json({ error: "invalid_parameters" }, { status: 400 });
   }
 
   const resp: ChannelResponse = await fetch(URL).then((r) => r.json());

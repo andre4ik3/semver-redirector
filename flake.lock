@@ -2,25 +2,21 @@
   "nodes": {
     "nixpkgs": {
       "locked": {
-        "lastModified": 1757545623,
-        "narHash": "sha256-mCxPABZ6jRjUQx3bPP4vjA68ETbPLNz9V2pk9tO7pRQ=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "8cd5ce828d5d1d16feff37340171a98fc3bf6526",
-        "type": "github"
+        "lastModified": 1759566170,
+        "narHash": "sha256-VQ/fsTigF1B3nXuul3BuuWL6aFxKaKEsNsgo1Dn+jig=",
+        "rev": "879bd460b3d3e8571354ce172128fbcbac1ed633",
+        "type": "tarball",
+        "url": "https://releases.nixos.org/nixos/25.05/nixos-25.05.810715.879bd460b3d3/nixexprs.tar.xz"
       },
       "original": {
-        "owner": "NixOS",
-        "ref": "nixos-25.05",
-        "repo": "nixpkgs",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://nixpkgs.flake.andre4ik3.dev"
       }
     },
     "root": {
       "inputs": {
         "nixpkgs": "nixpkgs",
-        "systems": "systems",
-        "utils": "utils"
+        "systems": "systems"
       }
     },
     "systems": {
@@ -35,26 +31,6 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
-        "type": "github"
-      }
-    },
-    "utils": {
-      "inputs": {
-        "systems": [
-          "systems"
-        ]
-      },
-      "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
         "type": "github"
       }
     }

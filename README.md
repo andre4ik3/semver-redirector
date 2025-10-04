@@ -39,9 +39,9 @@ Using the public instance located at <https://flake.andre4ik3.dev>:
     # Get the current stable Nixpkgs channel (nixos-*.*):
     nixpkgs.url = "https://nixpkgs.flake.andre4ik3.dev";
     # Get the current stable Nixpkgs channel for Darwin (nixpkgs-*.*):
-    nixpkgs-darwin.url = "https://nixpkgs.flake.andre4ik3.dev/stable/darwin";
+    nixpkgs-darwin.url = "https://nixpkgs.flake.andre4ik3.dev/darwin";
     # Get the current stable Nixpkgs small channel (nixos-*.*-small):
-    nixpkgs-small.url = "https://nixpkgs.flake.andre4ik3.dev/stable/small";
+    nixpkgs-small.url = "https://nixpkgs.flake.andre4ik3.dev/small";
     # Get the latest Nix version:
     nix.url = "https://github.flake.andre4ik3.dev/NixOS/nix/*";
     # Or pin to a specific version while allowing patch updates:
