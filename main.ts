@@ -11,6 +11,7 @@ Deno.serve(async (req) => {
   let response = await CACHE.match(req);
 
   if (response) {
+    console.debug(`Cache HIT: ${response.url} -> ${response.headers.get("Location")}`);
     return response;
   }
 
@@ -19,12 +20,13 @@ Deno.serve(async (req) => {
   } else if (url.hostname.startsWith("github.")) {
     response = await github.getVersions(path);
   } else if (url.hostname.startsWith("nixpkgs.")) {
-  response = await nixpkgs.getVersions(path);
+    response = await nixpkgs.getVersions(path);
   } else {
     return Response.redirect("https://github.com/andre4ik3/semver-redirector");
   }
 
   if (response.ok) {
+    console.debug(`Cache miss, saving: ${response.url} -> ${response.headers.get("Location")}`);
     await CACHE.put(req, response.clone());
   }
 
