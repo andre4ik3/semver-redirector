@@ -11,8 +11,8 @@ Deno.serve(async (req) => {
   let response = await CACHE.match(req);
 
   if (response) {
-    console.debug(`Cache HIT: ${response.url} -> ${response.headers.get("Location")}`);
-    return response;
+    console.log(`Cache HIT: ${response.url} -> ${response.headers.get("Location")}`);
+    // return response;
   }
 
   if (url.hostname.startsWith("gitea.")) {
@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
   }
 
   if (response.ok) {
-    console.debug(`Cache miss, saving: ${response.url} -> ${response.headers.get("Location")}`);
+    console.log(`Cache miss, saving: ${response.url} -> ${response.headers.get("Location")}`);
     await CACHE.put(req, response.clone());
   }
 
