@@ -1,17 +1,17 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "semver-redirector",
+  "name": "flake",
   "main": "main.js",
   "compatibility_date": "2023-07-01",
   "workers_dev": true,
   "routes": [
     {
-      "pattern": "flake2.andre4ik3.dev",
+      "pattern": "flake.andre4ik3.dev",
       "custom_domain": true
     },
     {
-      "pattern": "*.flake2.andre4ik3.dev",
+      "pattern": "*.flake.andre4ik3.dev/*",
       "zone_name": "andre4ik3.dev"
     }
-  ],
+  ]
 }
