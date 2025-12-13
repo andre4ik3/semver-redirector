@@ -1,0 +1,3 @@
+- biome
+- deploy to cf workers
+- publish to npm?
