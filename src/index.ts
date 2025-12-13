@@ -31,8 +31,7 @@ async function handleRequest(request: Request): Promise<Response> {
     for (const provider of PROVIDERS) {
       if (provider.match(name)) {
         const params = provider.parse(name, args);
-        if (!params.success)
-          return Response.json(`error: ${params.err}`, { status: 400 });
+        if (!params.success) return Response.json(`error: ${params.err}`, { status: 400 });
         response = await provider.handle(request, params.ok);
         break;
       }

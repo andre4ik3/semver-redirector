@@ -2,9 +2,7 @@ import { Range, SemVer } from "semver";
 
 export const USER_AGENT = "NixSemverRedirector/1.0 (+https://github.com/andre4ik3/semver-redirector)";
 
-export type Result<T, E> =
-  | { success: true; ok: T }
-  | { success: false; err: E };
+export type Result<T, E> = { success: true; ok: T } | { success: false; err: E };
 
 export function ok<T>(ok: T): Result<T, never> {
   return { success: true, ok };

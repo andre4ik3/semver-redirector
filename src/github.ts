@@ -1,6 +1,6 @@
-import type { Range } from "semver";
-import { ok, err, type Result, parseRange, respondWith, parseVersion, USER_AGENT, type IProvider } from "./utils";
 import { Octokit, RequestError } from "octokit";
+import type { Range } from "semver";
+import { err, type IProvider, ok, parseRange, parseVersion, type Result, respondWith, USER_AGENT } from "./utils";
 
 const NAMES = ["github", "gitea", "forgejo"] as const;
 
@@ -31,7 +31,7 @@ export class GitHubProvider implements IProvider<Name, Parameters> {
   }
 
   parse(name: Name, args: string[]): Result<Parameters, string> {
-    let host: string = "api.github.com";
+    let host = "api.github.com";
 
     if (args.length < 3 || args.length > 4) {
       return err(`must have 3 or 4 arguments, instead got ${args.length}`);
@@ -77,7 +77,7 @@ export class GitHubProvider implements IProvider<Name, Parameters> {
         return Response.json(`error: ${e.status} ${e.message}`, { status: e.status });
       } else {
         console.error(e);
-        return Response.json(`error: internal server error`, { status: 500 });
+        return Response.json("error: internal server error", { status: 500 });
       }
     }
 

@@ -1,4 +1,4 @@
-import { err, ok, USER_AGENT, type IProvider, type Result } from "./utils";
+import { err, type IProvider, ok, type Result, USER_AGENT } from "./utils";
 
 const URL = "https://prometheus.nixos.org/api/v1/query?query=channel_revision";
 const STATUSES = ["stable", "rolling"] as const;
@@ -82,18 +82,19 @@ export class NixpkgsProvider implements IProvider<"nixpkgs", Parameters> {
 
     if (resp.status !== "success") {
       console.error(resp);
-      return Response.json(`error: bad response from nixpkgs`, { status: 503 });
+      return Response.json("error: bad response from nixpkgs", { status: 503 });
     }
 
-    const channel = channels.find((ch) =>
-      ch.metric.status === status &&
-      // The `nixpkgs-unstable` channel has no variant so default it to darwin.
-      (ch.metric.variant || "darwin") === variant &&
-      ch.metric.current === "1",
+    const channel = channels.find(
+      (ch) =>
+        ch.metric.status === status &&
+        // The `nixpkgs-unstable` channel has no variant so default it to darwin.
+        (ch.metric.variant || "darwin") === variant &&
+        ch.metric.current === "1",
     );
 
     if (!channel) {
-      return Response.json(`error: channel not found`, { status: 404 });
+      return Response.json("error: channel not found", { status: 404 });
     }
 
     return new Response(null, {
