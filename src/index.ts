@@ -15,6 +15,7 @@ function cleanUrl(url: string) {
 
 async function handleRequest(request: Request): Promise<Response> {
   const url = cleanUrl(request.url);
+  // biome-ignore lint/style/noNonNullAssertion: splitting will always have at least one element
   const name = request.headers.get("X-Semver-Provider") ?? url.hostname.split(".")[0]!;
   const args = url.pathname.split("/").slice(1).map(decodeURI);
 

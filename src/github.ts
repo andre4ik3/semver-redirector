@@ -37,6 +37,8 @@ export class GitHubProvider implements IProvider<Name, Parameters> {
       return err(`must have 3 or 4 arguments, instead got ${args.length}`);
     }
 
+    // biome-ignore-start lint/style/noNonNullAssertion: length is checked above
+
     if (args.length === 4) {
       host = args.shift()!;
     } else if (name !== "github") {
@@ -51,6 +53,8 @@ export class GitHubProvider implements IProvider<Name, Parameters> {
     if (!range.success) {
       return err(`failed to parse semver range: ${range.err}`);
     }
+
+    // biome-ignore-end lint/style/noNonNullAssertion: length is checked above
 
     return ok({ name, baseUrl, owner, repo, range: range.ok });
   }
