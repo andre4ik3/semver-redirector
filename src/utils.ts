@@ -41,3 +41,9 @@ export function respondWith(tarballUrl: string): Response {
     },
   });
 }
+
+export interface IProvider<Name extends string, Parameters> {
+  match(str: string): str is Name;
+  parse(name: Name, args: string[]): Result<Parameters, string>;
+  handle(request: Request, parameters: Parameters): Promise<Response>;
+}

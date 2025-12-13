@@ -1,11 +1,17 @@
 {
   "name": "semver-redirector",
-  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "bun build src/index.ts --production --target=browser --outfile=bundle.js",
+    "start": "deno serve src/index.ts"
+  },
   "dependencies": {
     "octokit": "^5.0.5",
     "semver": "^7.7.3"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251213.0",
     "@types/bun": "latest",
     "@types/semver": "^7.7.1"
   },

@@ -17,7 +17,10 @@
       {
         devShells = eachSystem (pkgs: {
           default = pkgs.mkShellNoCC {
-            packages = [ pkgs.bun ];
+            packages = with pkgs; [
+              bun
+              deno
+            ];
           };
         });
       }

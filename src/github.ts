@@ -1,12 +1,12 @@
 import type { Range } from "semver";
-import { ok, err, type Result, parseRange, respondWith, parseVersion, USER_AGENT } from "./utils";
+import { ok, err, type Result, parseRange, respondWith, parseVersion, USER_AGENT, type IProvider } from "./utils";
 import { Octokit, RequestError } from "octokit";
 
-const PROVIDERS = ["github", "gitea", "forgejo"] as const;
+const NAMES = ["github", "gitea", "forgejo"] as const;
 
-type Provider = (typeof PROVIDERS)[number];
+type Name = (typeof NAMES)[number];
 
-function tarballUrl(provider: Provider, baseUrl: string, owner: string, repo: string, rev: string) {
+function tarballUrl(provider: Name, baseUrl: string, owner: string, repo: string, rev: string) {
   let url: URL;
   if (provider === "github") {
     url = new URL(`${baseUrl}/repos/${owner}/${repo}/tarball/${rev}`);
@@ -18,67 +18,71 @@ function tarballUrl(provider: Provider, baseUrl: string, owner: string, repo: st
 }
 
 export interface Parameters {
-  provider: Provider;
+  name: Name;
   baseUrl: string;
   owner: string;
   repo: string;
   range: Range | "latest";
 }
 
-export function match(provider: string): provider is Provider {
-  return PROVIDERS.includes(provider as Provider);
-}
-
-export function parse(provider: Provider, args: string[]): Result<Parameters, string> {
-  let host: string = "api.github.com";
-
-  if (args.length < 3 || args.length > 4) {
-    return err(`must have 3 or 4 arguments, instead got ${args.length}`);
+export class GitHubProvider implements IProvider<Name, Parameters> {
+  match(str: string): str is Name {
+    return NAMES.includes(str as Name);
   }
 
-  if (args.length === 4) {
-    host = args.shift()!;
-  } else if (provider !== "github") {
-    return err(`provider '${provider}' requires a host`);
+  parse(name: Name, args: string[]): Result<Parameters, string> {
+    let host: string = "api.github.com";
+
+    if (args.length < 3 || args.length > 4) {
+      return err(`must have 3 or 4 arguments, instead got ${args.length}`);
+    }
+
+    if (args.length === 4) {
+      host = args.shift()!;
+    } else if (name !== "github") {
+      return err(`provider '${name}' requires a host`);
+    }
+
+    const baseUrl = name === "github" ? `https://${host}` : `https://${host}/api/v1`;
+    const owner = args.shift()!;
+    const repo = args.shift()!;
+
+    const range = parseRange(args.shift()!);
+    if (!range.success) {
+      return err(`failed to parse semver range: ${range.err}`);
+    }
+
+    return ok({ name, baseUrl, owner, repo, range: range.ok });
   }
 
-  const baseUrl = provider === "github" ? `https://${host}` : `https://${host}/api/v1`;
-  const owner = args.shift()!;
-  const repo = args.shift()!;
+  async handle(request: Request, { name, baseUrl, owner, repo, range }: Parameters): Promise<Response> {
+    const auth = request.headers.get("Authorization") ?? undefined;
+    const api = new Octokit({ baseUrl, userAgent: USER_AGENT });
+    const tags = api.paginate.iterator(api.rest.repos.listTags, { owner, repo, headers: { authorization: auth } });
 
-  const range = parseRange(args.shift()!);
-  if (!range.success) {
-    return err(`failed to parse semver range: ${range.err}`);
-  }
+    try {
+      for await (const { data } of tags) {
+        for (const tag of data) {
+          const url = tarballUrl(name, baseUrl, owner, repo, tag.commit.sha);
+          // short circuit to get latest tag for repos that don't follow semver
+          if (range === "latest") return respondWith(url);
 
-  return ok({ provider, baseUrl, owner, repo, range: range.ok });
-}
-
-export async function handle(request: Request, { provider, baseUrl, owner, repo, range }: Parameters): Promise<Response> {
-  const auth = request.headers.get("Authorization") ?? undefined;
-  const api = new Octokit({ baseUrl, userAgent: USER_AGENT });
-  const tags = api.paginate.iterator(api.rest.repos.listTags, { owner, repo, headers: { authorization: auth } });
-
-  try {
-    for await (const { data } of tags) {
-      for (const tag of data) {
-        const url = tarballUrl(provider, baseUrl, owner, repo, tag.commit.sha);
-        // short circuit to get latest tag for repos that don't follow semver
-        if (range === "latest") return respondWith(url);
-
-        const version = parseVersion(tag.name);
-        if (!version.success) continue;
-        if (range.test(version.ok)) return respondWith(url);
+          const version = parseVersion(tag.name);
+          if (!version.success) continue;
+          if (range.test(version.ok)) return respondWith(url);
+        }
+      }
+    } catch (e) {
+      if (e instanceof RequestError) {
+        return Response.json(`error: ${e.status} ${e.message}`, { status: e.status });
+      } else {
+        console.error(e);
+        return Response.json(`error: internal server error`, { status: 500 });
       }
     }
-  } catch (e) {
-    if (e instanceof RequestError) {
-      return Response.json(`error: ${e.status} ${e.message}`, { status: e.status });
-    } else {
-      console.error(e);
-      return Response.json(`error: internal server error`, { status: 500 });
-    }
-  }
 
-  return Response.json("error: no versions were found", { status: 404 });
+    return Response.json("error: no versions were found", { status: 404 });
+  }
 }
+
+export default new GitHubProvider();
