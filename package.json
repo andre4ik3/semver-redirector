@@ -4,9 +4,11 @@
   "license": "MIT",
   "scripts": {
     "build": "bun build src/index.ts --production --target=browser --outfile=main.js",
-    "check": "biome check",
+    "check": "tsc && biome check",
     "start": "deno serve src/index.ts"
   },
+  "type": "module",
+  "main": "main.js",
   "dependencies": {
     "octokit": "^5.0.5",
     "semver": "^7.7.3"
