@@ -6,12 +6,12 @@ const NAMES = ["github", "gitea", "forgejo"] as const;
 
 type Name = (typeof NAMES)[number];
 
-function tarballUrl(provider: Name, baseUrl: string, owner: string, repo: string, rev: string) {
+function tarballUrl(provider: Name, host: string, owner: string, repo: string, rev: string) {
   let url: URL;
   if (provider === "github") {
-    url = new URL(`${baseUrl}/repos/${owner}/${repo}/tarball/${rev}`);
+    url = new URL(`https://${host}/repos/${owner}/${repo}/tarball/${rev}`);
   } else {
-    url = new URL(`${baseUrl}/${owner}/${repo}/archive/${rev}.tar.gz`);
+    url = new URL(`https://${host}/${owner}/${repo}/archive/${rev}.tar.gz`);
   }
   url.searchParams.set("rev", rev);
   return url.toString();
@@ -19,7 +19,7 @@ function tarballUrl(provider: Name, baseUrl: string, owner: string, repo: string
 
 export interface Parameters {
   name: Name;
-  baseUrl: string;
+  host: string;
   owner: string;
   repo: string;
   range: Range | "latest";
@@ -45,7 +45,6 @@ export class GitHubProvider implements IProvider<Name, Parameters> {
       return err(`provider '${name}' requires a host`);
     }
 
-    const baseUrl = name === "github" ? `https://${host}` : `https://${host}/api/v1`;
     const owner = args.shift()!;
     const repo = args.shift()!;
 
@@ -56,10 +55,12 @@ export class GitHubProvider implements IProvider<Name, Parameters> {
 
     // biome-ignore-end lint/style/noNonNullAssertion: length is checked above
 
-    return ok({ name, baseUrl, owner, repo, range: range.ok });
+    return ok({ name, host, owner, repo, range: range.ok });
   }
 
-  async handle(request: Request, { name, baseUrl, owner, repo, range }: Parameters): Promise<Response> {
+  async handle(request: Request, { name, host, owner, repo, range }: Parameters): Promise<Response> {
+    const baseUrl = name === "github" ? `https://${host}` : `https://${host}/api/v1`;
+
     const auth = request.headers.get("Authorization") ?? undefined;
     const api = new Octokit({ baseUrl, userAgent: USER_AGENT });
     const tags = api.paginate.iterator(api.rest.repos.listTags, { owner, repo, headers: { authorization: auth } });
@@ -67,7 +68,7 @@ export class GitHubProvider implements IProvider<Name, Parameters> {
     try {
       for await (const { data } of tags) {
         for (const tag of data) {
-          const url = tarballUrl(name, baseUrl, owner, repo, tag.commit.sha);
+          const url = tarballUrl(name, host, owner, repo, tag.commit.sha);
           // short circuit to get latest tag for repos that don't follow semver
           if (range === "latest") return respondWith(url);
 

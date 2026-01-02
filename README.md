@@ -103,5 +103,5 @@ nix flake show "http://github.flake.localhost/NixOS/nix/2"
 [Deno]: https://deno.land
 [Bun]: https://bun.com
 [Caddy]: https://caddyserver.com
-[Deploy to Deno]: https://console.deno.com/new?clone=https%3A%2F%2Fgithub.com%2Fandre4ik3%2Fsemver-redirector
+[Deploy to Deno]: https://console.deno.com/new?clone=https%3A%2F%2Fgithub.com%2Fandre4ik3%2Fsemver-redirector&install=deno+install
 [Deploy to Cloudflare]: https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2Fandre4ik3%2Fsemver-redirector

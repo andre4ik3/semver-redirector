@@ -8,7 +8,7 @@ test("argument parsing", () => {
   expect(github.parse("github", ["NixOS", "nix", "2"])).toStrictEqual(
     ok({
       name: "github",
-      baseUrl: "https://api.github.com",
+      host: "api.github.com",
       owner: "NixOS",
       repo: "nix",
       range: new Range("2"),
@@ -19,7 +19,7 @@ test("argument parsing", () => {
   expect(github.parse("github", ["github.example.com", "NixOS", "nix", "2"])).toStrictEqual(
     ok({
       name: "github",
-      baseUrl: "https://github.example.com",
+      host: "github.example.com",
       owner: "NixOS",
       repo: "nix",
       range: new Range("2"),
@@ -30,7 +30,7 @@ test("argument parsing", () => {
   expect(github.parse("forgejo", ["git.lix.systems", "lix-project", "lix", "2"])).toStrictEqual(
     ok({
       name: "forgejo",
-      baseUrl: "https://git.lix.systems/api/v1",
+      host: "git.lix.systems",
       owner: "lix-project",
       repo: "lix",
       range: new Range("2"),
@@ -41,7 +41,7 @@ test("argument parsing", () => {
   expect(github.parse("github", ["NixOS", "nix", "latest"])).toStrictEqual(
     ok({
       name: "github",
-      baseUrl: "https://api.github.com",
+      host: "api.github.com",
       owner: "NixOS",
       repo: "nix",
       range: "latest",
@@ -53,7 +53,7 @@ test("argument parsing", () => {
   expect(github.parse("github", ["9001", "copyparty", "*"])).toStrictEqual(
     ok({
       name: "github",
-      baseUrl: "https://api.github.com",
+      host: "api.github.com",
       owner: "9001",
       repo: "copyparty",
       range: new Range("*"),

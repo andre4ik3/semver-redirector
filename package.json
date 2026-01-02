@@ -1,6 +1,6 @@
 {
   "name": "semver-redirector",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "scripts": {
     "build": "bun build src/index.ts --production --target=browser --outfile=main.js",
