@@ -61,9 +61,9 @@ export class GitHubProvider implements IProvider<Name, Parameters> {
   async handle(request: Request, { name, host, owner, repo, range }: Parameters): Promise<Response> {
     const baseUrl = name === "github" ? `https://${host}` : `https://${host}/api/v1`;
 
-    const auth = request.headers.get("Authorization") ?? undefined;
-    const api = new Octokit({ baseUrl, userAgent: USER_AGENT });
-    const tags = api.paginate.iterator(api.rest.repos.listTags, { owner, repo, headers: { authorization: auth } });
+    const auth = request.headers.get("Authorization")?.match(/^(?:Bearer|token)\s+(.+)$/i)?.[1] ?? undefined;
+    const api = new Octokit({ baseUrl, userAgent: USER_AGENT, auth });
+    const tags = api.paginate.iterator(api.rest.repos.listTags, { owner, repo });
 
     try {
       for await (const { data } of tags) {
