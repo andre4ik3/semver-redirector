@@ -1,6 +1,6 @@
+import { type Range, satisfies } from "@std/semver";
 import { Octokit, RequestError } from "octokit";
-import type { Range } from "semver";
-import { err, type IProvider, ok, parseRange, parseVersion, type Result, respondWith, USER_AGENT } from "./utils";
+import { err, type IProvider, ok, parseRange, parseVersion, type Result, respondWith, USER_AGENT } from "./utils.ts";
 
 const NAMES = ["github", "gitea", "forgejo"] as const;
 
@@ -74,7 +74,7 @@ export class GitHubProvider implements IProvider<Name, Parameters> {
 
           const version = parseVersion(tag.name);
           if (!version.success) continue;
-          if (range.test(version.ok)) return respondWith(url);
+          if (satisfies(version.ok, range)) return respondWith(url);
         }
       }
     } catch (e) {

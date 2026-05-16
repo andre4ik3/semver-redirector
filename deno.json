@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "build": "deno bundle src/main.ts --minify --platform=browser --output=main.js",
+    "dev": "deno serve --allow-net --watch src/main.ts"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1",
+    "@std/semver": "jsr:@std/semver@1",
+    "octokit": "npm:octokit@5"
+  }
+}
