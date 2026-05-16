@@ -1,4 +1,4 @@
-import { err, type IProvider, ok, type Result, USER_AGENT } from "./utils";
+import { err, type IProvider, ok, type Result, USER_AGENT } from "./utils.ts";
 
 const URL = "https://prometheus.nixos.org/api/v1/query?query=channel_revision";
 const STATUSES = ["stable", "rolling"] as const;

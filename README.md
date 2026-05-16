@@ -65,17 +65,11 @@ Using the public instance located at <https://flake.andre4ik3.dev>:
 
 ## Running
 
-This project uses [Bun] as the package manager and test runner. After installing
-Bun, run `bun i` to install dependencies, `bun run check` to check TypeScript
-types and linter errors, and `bun test` to run tests.
-
-However, Bun cannot be used as the runtime due to its lack of support for the
-Web Cache API. The easiest way to run the project locally is with [Deno], like
-this:
+This project is a simple script made with [Deno]. You can run it like this:
 
 ```
 # Start listening on localhost:8000
-deno run start
+deno run dev
 ```
 
 However it won't be very useful, since determining the handler is done via the
@@ -84,7 +78,18 @@ subdomains that start with `github.` for GitHub and `gitea.` for Gitea/Forgejo.
 (Or you could change the script to determine the handler differently. It's
 pretty simple after all.)
 
-For local experimentation you can use [Caddy] with a configuration like this:
+For simple testing with `curl`, without having to mess with DNS or anything,
+you can use the `--connect-to` option:
+
+```
+curl -v --connect-to ::127.0.0.1:8000 'http://nixpkgs.flake.localhost'
+# -> should redirect to stable nixexprs.tar.xz
+
+curl -v --connect-to ::127.0.0.1:8000 'http://github.flake.localhost/NixOS/nix/*.tar.gz'
+# -> should redirect to stable nix
+```
+
+For testing with Nix, you can use [Caddy] with a configuration like this:
 
 ```
 http://*.flake.localhost {
@@ -101,7 +106,6 @@ nix flake show "http://github.flake.localhost/NixOS/nix/2"
 
 [Semver]: https://www.npmjs.com/package/semver
 [Deno]: https://deno.land
-[Bun]: https://bun.com
 [Caddy]: https://caddyserver.com
 [Deploy to Deno]: https://console.deno.com/new?clone=https%3A%2F%2Fgithub.com%2Fandre4ik3%2Fsemver-redirector&install=deno+install
 [Deploy to Cloudflare]: https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2Fandre4ik3%2Fsemver-redirector

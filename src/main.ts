@@ -1,6 +1,6 @@
-import github from "./github";
-import nixpkgs from "./nixpkgs";
-import type { IProvider } from "./utils";
+import github from "./github.ts";
+import nixpkgs from "./nixpkgs.ts";
+import type { IProvider } from "./utils.ts";
 
 const PROVIDERS = [github, nixpkgs] as IProvider<string, unknown>[]; // TODO this is a hack
 const CACHE = await caches.open("v1");

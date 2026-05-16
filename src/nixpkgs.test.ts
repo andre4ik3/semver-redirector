@@ -1,31 +1,35 @@
-import { expect, test } from "bun:test";
-import nixpkgs from "./nixpkgs";
-import { ok } from "./utils";
+import { assertEquals, assertFalse } from "@std/assert";
+import nixpkgs from "./nixpkgs.ts";
+import { ok } from "./utils.ts";
 
-test("argument parsing", () => {
+Deno.test("argument parsing", () => {
   // default should be stable
-  expect(nixpkgs.parse("nixpkgs", [])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", []),
     ok({
       status: "stable",
       variant: "primary",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["primary"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["primary"]),
     ok({
       status: "stable",
       variant: "primary",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["darwin"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["darwin"]),
     ok({
       status: "stable",
       variant: "darwin",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["small"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["small"]),
     ok({
       status: "stable",
       variant: "small",
@@ -34,49 +38,56 @@ test("argument parsing", () => {
 
   // manually specifying stable
 
-  expect(nixpkgs.parse("nixpkgs", ["stable"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["stable"]),
     ok({
       status: "stable",
       variant: "primary",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["primary", "stable"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["primary", "stable"]),
     ok({
       status: "stable",
       variant: "primary",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["stable", "primary"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["stable", "primary"]),
     ok({
       status: "stable",
       variant: "primary",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["darwin", "stable"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["darwin", "stable"]),
     ok({
       status: "stable",
       variant: "darwin",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["stable", "darwin"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["stable", "darwin"]),
     ok({
       status: "stable",
       variant: "darwin",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["small", "stable"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["small", "stable"]),
     ok({
       status: "stable",
       variant: "small",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["stable", "small"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["stable", "small"]),
     ok({
       status: "stable",
       variant: "small",
@@ -85,49 +96,56 @@ test("argument parsing", () => {
 
   // rolling/unstable
 
-  expect(nixpkgs.parse("nixpkgs", ["rolling"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["rolling"]),
     ok({
       status: "rolling",
       variant: "primary",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["primary", "rolling"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["primary", "rolling"]),
     ok({
       status: "rolling",
       variant: "primary",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["rolling", "primary"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["rolling", "primary"]),
     ok({
       status: "rolling",
       variant: "primary",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["darwin", "rolling"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["darwin", "rolling"]),
     ok({
       status: "rolling",
       variant: "darwin",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["rolling", "darwin"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["rolling", "darwin"]),
     ok({
       status: "rolling",
       variant: "darwin",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["small", "rolling"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["small", "rolling"]),
     ok({
       status: "rolling",
       variant: "small",
     }),
   );
 
-  expect(nixpkgs.parse("nixpkgs", ["rolling", "small"])).toStrictEqual(
+  assertEquals(
+    nixpkgs.parse("nixpkgs", ["rolling", "small"]),
     ok({
       status: "rolling",
       variant: "small",
@@ -136,11 +154,11 @@ test("argument parsing", () => {
 
   // broken args
 
-  expect(nixpkgs.parse("nixpkgs", ["__not_real__"])).toHaveProperty("err");
-  expect(nixpkgs.parse("nixpkgs", ["rolling", "__not_real__"])).toHaveProperty("err");
-  expect(nixpkgs.parse("nixpkgs", ["__not_real__", "rolling"])).toHaveProperty("err");
-  expect(nixpkgs.parse("nixpkgs", ["darwin", "__not_real__"])).toHaveProperty("err");
-  expect(nixpkgs.parse("nixpkgs", ["__not_real__", "darwin"])).toHaveProperty("err");
-  expect(nixpkgs.parse("nixpkgs", ["__not_real__", "__not_real__"])).toHaveProperty("err");
-  expect(nixpkgs.parse("nixpkgs", ["rolling", "darwin", "stable"])).toHaveProperty("err");
+  assertFalse(nixpkgs.parse("nixpkgs", ["__not_real__"]).success);
+  assertFalse(nixpkgs.parse("nixpkgs", ["rolling", "__not_real__"]).success);
+  assertFalse(nixpkgs.parse("nixpkgs", ["__not_real__", "rolling"]).success);
+  assertFalse(nixpkgs.parse("nixpkgs", ["darwin", "__not_real__"]).success);
+  assertFalse(nixpkgs.parse("nixpkgs", ["__not_real__", "darwin"]).success);
+  assertFalse(nixpkgs.parse("nixpkgs", ["__not_real__", "__not_real__"]).success);
+  assertFalse(nixpkgs.parse("nixpkgs", ["rolling", "darwin", "stable"]).success);
 });

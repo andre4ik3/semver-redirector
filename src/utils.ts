@@ -1,4 +1,4 @@
-import { Range, SemVer } from "semver";
+import { type Range, type SemVer, parseRange as semverParseRange, parse as semverParseVersion } from "@std/semver";
 
 export const USER_AGENT = "NixSemverRedirector/1.0 (+https://github.com/andre4ik3/semver-redirector)";
 
@@ -14,7 +14,7 @@ export function err<E>(err: E): Result<never, E> {
 
 export function parseVersion(version: string): Result<SemVer, string> {
   try {
-    return ok(new SemVer(version));
+    return ok(semverParseVersion(version));
   } catch (e) {
     return err((e as Error).message);
   }
@@ -23,7 +23,7 @@ export function parseVersion(version: string): Result<SemVer, string> {
 export function parseRange(range: string): Result<Range | "latest", string> {
   if (range === "latest") return ok("latest");
   try {
-    return ok(new Range(range.replace(".tar.gz", "")));
+    return ok(semverParseRange(range.replace(".tar.gz", "")));
   } catch (e) {
     return err((e as Error).message);
   }
