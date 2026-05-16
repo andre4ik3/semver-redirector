@@ -23,7 +23,7 @@ export function parseVersion(version: string): Result<SemVer, string> {
 export function parseRange(range: string): Result<Range | "latest", string> {
   if (range === "latest") return ok("latest");
   try {
-    return ok(semverParseRange(range.replace(".tar.gz", "")));
+    return ok(semverParseRange(range));
   } catch (e) {
     return err((e as Error).message);
   }
