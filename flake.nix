@@ -18,7 +18,6 @@
         devShells = eachSystem (pkgs: {
           default = pkgs.mkShellNoCC {
             packages = with pkgs; [
-              bun
               deno
               biome
             ];
