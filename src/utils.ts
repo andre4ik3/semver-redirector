@@ -1,4 +1,4 @@
-import { parse as semverParseVersion, parseRange as semverParseRange, type Range, type SemVer } from "@std/semver";
+import { type Range, type SemVer, parseRange as semverParseRange, parse as semverParseVersion } from "@std/semver";
 
 export const USER_AGENT = "NixSemverRedirector/1.0 (+https://github.com/andre4ik3/semver-redirector)";
 
@@ -29,7 +29,7 @@ export function parseRange(range: string): Result<Range | "latest", string> {
   }
 }
 
-export function respondWith(params: { url: string; public: boolean | undefined; }): Response {
+export function respondWith(params: { url: string; public: boolean | undefined }): Response {
   return new Response(null, {
     status: 307,
     headers: {

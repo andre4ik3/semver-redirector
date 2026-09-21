@@ -1,6 +1,6 @@
 import { type Range, satisfies } from "@std/semver";
 import { Octokit, RequestError } from "octokit";
-import { err, type IProvider, ok, parseRange, parseVersion, respondWith, type Result, USER_AGENT } from "./utils.ts";
+import { err, type IProvider, ok, parseRange, parseVersion, type Result, respondWith, USER_AGENT } from "./utils.ts";
 
 const NAMES = ["github", "gitea", "forgejo"] as const;
 

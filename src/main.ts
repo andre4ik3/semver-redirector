@@ -1,6 +1,6 @@
 import github from "./github.ts";
 import nixpkgs from "./nixpkgs.ts";
-import { type IProvider } from "./utils.ts";
+import type { IProvider } from "./utils.ts";
 
 const PROVIDERS = [github, nixpkgs] as IProvider<string, unknown>[]; // TODO this is a hack
 
