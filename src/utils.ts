@@ -1,4 +1,4 @@
-import { type Range, type SemVer, parseRange as semverParseRange, parse as semverParseVersion } from "@std/semver";
+import { parse as semverParseVersion, parseRange as semverParseRange, type Range, type SemVer } from "@std/semver";
 
 export const USER_AGENT = "NixSemverRedirector/1.0 (+https://github.com/andre4ik3/semver-redirector)";
 
@@ -29,13 +29,13 @@ export function parseRange(range: string): Result<Range | "latest", string> {
   }
 }
 
-export function respondWith(tarballUrl: string): Response {
+export function respondWith(params: { url: string; public: boolean | undefined; }): Response {
   return new Response(null, {
     status: 307,
     headers: {
-      Location: tarballUrl,
-      Link: `<${tarballUrl}>; rel="immutable"`,
-      "Cache-Control": "max-age=300",
+      Location: params.url,
+      Link: `<${params.url}>; rel="immutable"`,
+      "Cache-Control": `${(params.public ?? true) ? "public" : "private"}, max-age=300, stale-while-revalidate=3600`,
     },
   });
 }

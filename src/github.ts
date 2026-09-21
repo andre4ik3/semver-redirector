@@ -1,6 +1,6 @@
 import { type Range, satisfies } from "@std/semver";
 import { Octokit, RequestError } from "octokit";
-import { err, type IProvider, ok, parseRange, parseVersion, type Result, respondWith, USER_AGENT } from "./utils.ts";
+import { err, type IProvider, ok, parseRange, parseVersion, respondWith, type Result, USER_AGENT } from "./utils.ts";
 
 const NAMES = ["github", "gitea", "forgejo"] as const;
 
@@ -70,11 +70,11 @@ export class GitHubProvider implements IProvider<Name, Parameters> {
         for (const tag of data) {
           const url = tarballUrl(name, host, owner, repo, tag.commit.sha);
           // short circuit to get latest tag for repos that don't follow semver
-          if (range === "latest") return respondWith(url);
+          if (range === "latest") return respondWith({ url, public: auth === undefined });
 
           const version = parseVersion(tag.name);
           if (!version.success) continue;
-          if (satisfies(version.ok, range)) return respondWith(url);
+          if (satisfies(version.ok, range)) return respondWith({ url, public: auth === undefined });
         }
       }
     } catch (e) {

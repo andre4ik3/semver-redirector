@@ -102,7 +102,7 @@ export class NixpkgsProvider implements IProvider<"nixpkgs", Parameters> {
       headers: {
         Location: `https://channels.nixos.org/${channel.metric.channel}/nixexprs.tar.xz`,
         // leave out Link rel=immutable because channels.nixos.org does its own locking
-        "Cache-Control": "max-age=86400",
+        "Cache-Control": "public, max-age=86400",
       },
     });
   }
